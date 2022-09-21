@@ -6,10 +6,10 @@ Plug 'azabiong/vim-highlighter'
 Plug 'vim-airline/vim-airline'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'https://github.com/vim-syntastic/syntastic'
-Plug 'glepnir/dashboard-nvim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'https://github.com/morhetz/gruvbox'
+Plug 'windwp/nvim-autopairs'
 
 call plug#end()
 
@@ -46,6 +46,7 @@ set autoindent
 "something need
 set noswapfile
 set clipboard=unnamedplus
+set autochdir
 set noshowmode
 set nu rnu
 set softtabstop=3
@@ -77,6 +78,14 @@ set iminsert=0
 set imsearch=0
 "setts end
 
+"cpp highlight
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+au BufWinEnter * match ExtraWhitespace /\s\+$/
+au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+au InsertLeave * match ExtraWhitespace /\s\+$/
+au BufWinLeave * call clearmatches()
+
 "let
 let g:cpp_functional_highlight = 1
 let g:cpp_attributes_highlight = 1
@@ -86,9 +95,11 @@ let g:cpp_simple_highlight = 1
 "mappings
 imap jj <Esc>
 map <F6> :NERDTreeToggle <CR>
+autocmd filetype cpp nnoremap <F5> :w <bar> :!g++ -g -std=c++17 -pedantic -Wall -Wextra -Werror -Wshadow -Wconversion -Wunreachable-code %:r -o %:r.exe <CR>
+autocmd filetype cpp nnoremap <F9> :w <bar> :!g++ -O2 -Wall -std=c++20 % -o %:r && %:r.exe <CR> 
+autocmd filetype cpp nnoremap <c-F5> :sbuffer <bar> :terminal main.exe <CR>
 
 "airline
 let g:airline#extensions#keymap#enabled = 0 "Не показывать текущий маппинг
 let g:Powerline_symbols='unicode' "Поддержка unicode
 let g:airline#extensions#xkblayout#enabled = 0
-
